@@ -10,9 +10,11 @@ const inputClass =
 export default function DownloadForm({
   product,
   fileUrl,
+  onDownloaded,
 }: {
   product: "ARCGIS" | "QGIS";
   fileUrl: string;
+  onDownloaded?: () => void;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -42,6 +44,7 @@ export default function DownloadForm({
 
       setUnlocked(true);
       sendGAEvent("event", "download", { product });
+      onDownloaded?.();
       requestAnimationFrame(() => linkRef.current?.click());
     } catch {
       setError("No se pudo conectar con el servidor. Intenta de nuevo.");

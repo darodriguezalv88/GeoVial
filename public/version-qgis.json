@@ -1,0 +1,6 @@
+{
+  "buildNumber": 1,
+  "version": "0.1.0",
+  "downloadUrl": "https://geovialpro.com/downloads/GeoVial-QGIS.zip",
+  "notes": "Primera version: imagenes satelitales, indices espectrales, abscisas, drenaje transversal, puentes, redes existentes y Carto25k (interseccion + descarga automatica)."
+}
