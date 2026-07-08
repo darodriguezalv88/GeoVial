@@ -1,0 +1,67 @@
+// Esquema de base de datos de GeoVialWeb.
+// Motor: Postgres (Neon, vía la integración de Vercel). DATABASE_URL usa el
+// pooler (pgbouncer) para runtime; DIRECT_URL es la conexión directa que
+// usan las migraciones (Prisma no soporta migrar a través del pooler).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum Plan {
+  MONTHLY
+  ANNUAL
+}
+
+enum LicenseStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+model License {
+  id          String        @id @default(cuid())
+  key         String        @unique
+  email       String        @unique
+  name        String?
+  plan        Plan?
+  status      LicenseStatus @default(EXPIRED)
+  // Fin del período pagado vigente (mensual/anual). Null hasta la primera compra.
+  currentPeriodEnd  DateTime?
+  lsCustomerId      String?
+  lsSubscriptionId  String?  @unique
+  createdAt   DateTime     @default(now())
+  activations Activation[]
+}
+
+model Activation {
+  id          String   @id @default(cuid())
+  licenseId   String
+  license     License  @relation(fields: [licenseId], references: [id])
+  machineId   String
+  activatedAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+
+  @@unique([licenseId, machineId])
+}
+
+enum DownloadProduct {
+  ARCGIS
+  QGIS
+}
+
+/// Registro de cada descarga (no deduplicado): quién y cuándo pidió el
+/// instalador, para saber quién está interesado en la herramienta.
+model Download {
+  id        String          @id @default(cuid())
+  name      String
+  email     String
+  product   DownloadProduct @default(ARCGIS)
+  createdAt DateTime        @default(now())
+}

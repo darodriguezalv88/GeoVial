@@ -1,0 +1,6 @@
+{
+  "buildNumber": 3,
+  "version": "1.0-beta",
+  "downloadUrl": "https://geovialpro.com/downloads/GeoVial.esriAddinX",
+  "notes": "Mejoras en Cartografía 25k: acumula planchas entre búsquedas, corrige bloqueos de esquema al repetir búsqueda/fusión, y simbología más robusta."
+}

@@ -1,0 +1,148 @@
+/* Webfonts — I.C. Diego Rodríguez brand system.
+   Display: Poppins · Body: Source Sans 3 · Data: IBM Plex Mono
+   NOTE: @import rules must precede every other rule per the CSS spec —
+   with Tailwind v4 that means before @import "tailwindcss", not after. */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* --- Navy (primary brand / dark surfaces / headings) --- */
+  --color-navy-900: #0c1a30;
+  --color-navy-800: #102540;
+  --color-navy-700: #16315a;
+  --color-navy-600: #1e4170;
+
+  /* --- Civil blue (primary action / water / infrastructure) --- */
+  --color-blue-700: #1d5a99;
+  --color-blue-600: #2570b8;
+  --color-blue-500: #3a8dd0;
+  --color-blue-400: #67a9e0;
+  --color-blue-100: #dceaf7;
+
+  /* --- Eco green (GIS / environment / sustainability) --- */
+  --color-green-700: #237a33;
+  --color-green-600: #2e9140;
+  --color-green-500: #46a94e;
+  --color-green-100: #ddefdf;
+
+  /* --- Slate neutrals --- */
+  --color-slate-800: #232c34;
+  --color-slate-700: #3c454d;
+  --color-slate-500: #6b7780;
+  --color-slate-400: #97a1a9;
+  --color-slate-300: #c7ced4;
+  --color-slate-200: #e2e7ec;
+  --color-slate-100: #eef1f4;
+  --color-mist: #f5f8fa;
+  --color-paper: #ffffff;
+
+  /* --- Signature gradients --- */
+  --grad-brand: linear-gradient(115deg, var(--color-blue-600) 0%, var(--color-green-600) 100%);
+  --grad-rule: linear-gradient(90deg, var(--color-blue-600), var(--color-green-600));
+  --grad-field: linear-gradient(160deg, var(--color-navy-800) 0%, var(--color-navy-900) 100%);
+
+  /* --- Semantic aliases --- */
+  --text-body: var(--color-slate-800);
+  --text-muted: var(--color-slate-500);
+  --border: var(--color-slate-200);
+  --border-strong: var(--color-slate-300);
+  --border-on-dark: rgba(255, 255, 255, 0.14);
+  --focus-ring: color-mix(in oklab, var(--color-blue-600) 45%, transparent);
+
+  /* --- Shadows (cool navy-tinted) --- */
+  --shadow-sm: 0 2px 6px rgba(16, 37, 64, 0.08);
+  --shadow-md: 0 8px 20px rgba(16, 37, 64, 0.1);
+  --shadow-lg: 0 18px 40px rgba(16, 37, 64, 0.14);
+  --shadow-dark: 0 20px 50px rgba(6, 14, 26, 0.45);
+}
+
+@theme inline {
+  --color-navy-900: var(--color-navy-900);
+  --color-navy-800: var(--color-navy-800);
+  --color-navy-700: var(--color-navy-700);
+  --color-navy-600: var(--color-navy-600);
+  --color-blue-700: var(--color-blue-700);
+  --color-blue-600: var(--color-blue-600);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-400: var(--color-blue-400);
+  --color-blue-100: var(--color-blue-100);
+  --color-green-700: var(--color-green-700);
+  --color-green-600: var(--color-green-600);
+  --color-green-500: var(--color-green-500);
+  --color-green-100: var(--color-green-100);
+  --color-slate-800: var(--color-slate-800);
+  --color-slate-700: var(--color-slate-700);
+  --color-slate-500: var(--color-slate-500);
+  --color-slate-400: var(--color-slate-400);
+  --color-slate-300: var(--color-slate-300);
+  --color-slate-200: var(--color-slate-200);
+  --color-slate-100: var(--color-slate-100);
+  --color-mist: var(--color-mist);
+  --color-paper: var(--color-paper);
+
+  --font-display: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-text: "Source Sans 3", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+body {
+  background: var(--color-mist);
+  color: var(--text-body);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Hero motion accents: small glints implying moving headlights,
+   a train and a ship along the dusk hero photo, plus twinkling city
+   lights. Quiet, ambient — not attention-grabbing. ---- */
+@keyframes gv-car-glow {
+  0% { left: 9%; top: 91%; opacity: 0; }
+  6% { opacity: 1; }
+  36% { left: 27%; top: 73%; }
+  62% { left: 37%; top: 61%; }
+  88% { left: 46%; top: 53%; opacity: 1; }
+  100% { left: 49%; top: 51%; opacity: 0; }
+}
+@keyframes gv-train-glow {
+  0% { left: 33%; top: 79%; opacity: 0; }
+  8% { opacity: 1; }
+  50% { left: 52%; top: 73%; }
+  92% { opacity: 1; }
+  100% { left: 66%; top: 66%; opacity: 0; }
+}
+@keyframes gv-ship-drift {
+  0%, 100% { left: 62.5%; top: 59.5%; }
+  50% { left: 65%; top: 60.3%; }
+}
+@keyframes gv-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+.gv-car-glow {
+  position: absolute; width: 5px; height: 5px; border-radius: 9999px;
+  background: #ffe3b0;
+  box-shadow: 0 0 8px 3px rgba(255, 204, 120, 0.85), 0 0 18px 7px rgba(255, 150, 60, 0.35);
+  animation: gv-car-glow 3.2s linear infinite;
+  pointer-events: none;
+}
+.gv-train-glow {
+  position: absolute; width: 5px; height: 5px; border-radius: 9999px;
+  background: #ffd9a0;
+  box-shadow: 0 0 7px 3px rgba(255, 200, 120, 0.8);
+  animation: gv-train-glow 6.5s linear infinite;
+  pointer-events: none;
+}
+.gv-ship-glow {
+  position: absolute; width: 6px; height: 6px; border-radius: 9999px;
+  background: #fff3d6;
+  box-shadow: 0 0 10px 4px rgba(255, 225, 160, 0.85), 0 0 22px 9px rgba(255, 190, 110, 0.3);
+  animation: gv-ship-drift 7s ease-in-out infinite;
+  pointer-events: none;
+}
+.gv-twinkle {
+  position: absolute; width: 3px; height: 3px; border-radius: 9999px;
+  background: #ffe9be;
+  box-shadow: 0 0 5px 2px rgba(255, 220, 160, 0.8);
+  animation: gv-twinkle 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
