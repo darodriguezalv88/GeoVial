@@ -8,9 +8,9 @@ import Footer from "@/components/Footer";
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 export const metadata: Metadata = {
-  title: "GeoVial — Add-in de ArcGIS Pro para corredores viales",
+  title: "GeoVial — Add-in para ArcGIS Pro y QGIS para corredores viales",
   description:
-    "GeoVial es un add-in para ArcGIS Pro que automatiza estudios de prefactibilidad y diseño de corredores viales: imágenes satelitales, índices espectrales, cuerpos de agua, drenajes, puentes y cruces con redes existentes.",
+    "GeoVial es un add-in para ArcGIS Pro y QGIS que automatiza estudios de prefactibilidad y diseño de corredores viales: imágenes satelitales, índices espectrales, cuerpos de agua, drenajes, puentes y cruces con redes existentes.",
 };
 
 export default function RootLayout({

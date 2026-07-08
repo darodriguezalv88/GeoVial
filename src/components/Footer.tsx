@@ -18,8 +18,8 @@ export default function Footer() {
       <div className="relative mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-5 px-6 py-10">
         <Logo />
         <p className="max-w-[44ch] text-[13.5px] leading-relaxed text-[#9DB0C6]">
-          Add-in para ArcGIS Pro orientado a estudios de prefactibilidad y diseño de
-          corredores viales.
+          Add-in para ArcGIS Pro y QGIS orientado a estudios de prefactibilidad y diseño
+          de corredores viales.
         </p>
         <a
           href="mailto:gerencia@geovialpro.com"

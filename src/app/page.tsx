@@ -21,7 +21,7 @@ const features = [
     icon: IconSatellite,
     title: "Imágenes satelitales integradas",
     description:
-      "Descarga Landsat (USGS), Sentinel-2 (Copernicus) y modelos DEM (GLO-30, SRTM) directo en ArcGIS Pro.",
+      "Descarga Landsat (USGS), Sentinel-2 (Copernicus) y modelos DEM (GLO-30, SRTM) directo en ArcGIS Pro o QGIS.",
     accent: "blue",
   },
   {
@@ -149,10 +149,10 @@ export default function Home() {
         <div className="relative z-10 mx-auto w-full max-w-[1160px] px-6 pb-[90px] pt-[150px]">
           <div className="max-w-[640px]">
             <p className="mb-5 font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#8FE0AE]">
-              GeoVial · Add-in para ArcGIS Pro 3.x
+              GeoVial · Add-in para ArcGIS Pro y QGIS
             </p>
-            <h1 className="max-w-[14ch] font-display text-[50px] font-bold leading-[1.06] tracking-tight text-white text-balance">
-              Estudios de corredores viales, resueltos dentro de ArcGIS&nbsp;Pro.
+            <h1 className="max-w-[16ch] font-display text-[50px] font-bold leading-[1.06] tracking-tight text-white text-balance">
+              Estudios de corredores viales, resueltos dentro de tu SIG.
             </h1>
             <p className="mt-[22px] max-w-[44ch] text-lg leading-[1.55] text-[#D6E0EC]">
               Automatiza tu prefactibilidad y diseño de corredores: imágenes satelitales,
@@ -175,7 +175,7 @@ export default function Home() {
               </Link>
             </div>
             <p className="mt-6 font-mono text-[12.5px] tracking-wide text-[#8FA3BC]">
-              v1.0 · .esriAddinX · ArcGIS Pro 3.x · Windows 64-bit
+              v1.0 · ArcGIS Pro 3.x · QGIS 3.28+ · Windows 64-bit
             </p>
           </div>
         </div>
@@ -223,8 +223,8 @@ export default function Home() {
             Todo lo que tu corredor vial necesita
           </h2>
           <p className="mt-3.5 text-[17px] leading-[1.55] text-slate-800">
-            Análisis geoespacial pensado para ingeniería vial, integrado directamente en la
-            cinta de opciones de ArcGIS Pro.
+            Análisis geoespacial pensado para ingeniería vial, integrado directamente en
+            ArcGIS Pro y QGIS.
           </p>
         </div>
 
