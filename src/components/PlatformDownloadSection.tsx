@@ -16,6 +16,7 @@ const PRODUCTS: Record<
     compat: string;
     requisitos: string[];
     pasos: { title: string; description: string }[];
+    locked?: boolean;
   }
 > = {
   ARCGIS: {
@@ -59,6 +60,7 @@ const PRODUCTS: Record<
     fileUrl: "/downloads/GeoVial-QGIS.zip",
     version: "v0.1",
     compat: "Compatible con QGIS 3.28+ (probado en 3.44 LTR) · Windows 64-bit",
+    locked: true,
     requisitos: [
       "QGIS 3.28 o superior instalado (recomendado: 3.44 LTR).",
       "Windows 10/11 de 64 bits.",
@@ -118,12 +120,22 @@ export default function PlatformDownloadSection() {
           </span>
         </div>
         <p className="mb-5 text-sm text-slate-500">Última versión · {product.compat}</p>
-        <DownloadForm
-          key={platform}
-          product={platform}
-          fileUrl={product.fileUrl}
-          onDownloaded={() => setDownloaded((prev) => new Set(prev).add(platform))}
-        />
+        {product.locked ? (
+          <button
+            disabled
+            title="Estamos validando las herramientas antes de publicarlo."
+            className="w-full cursor-not-allowed rounded-md bg-slate-200 px-6 py-3.5 text-base font-semibold text-slate-500"
+          >
+            Próximamente
+          </button>
+        ) : (
+          <DownloadForm
+            key={platform}
+            product={platform}
+            fileUrl={product.fileUrl}
+            onDownloaded={() => setDownloaded((prev) => new Set(prev).add(platform))}
+          />
+        )}
       </div>
 
       <section className="mt-[52px]">

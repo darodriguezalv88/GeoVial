@@ -69,7 +69,8 @@ export default function PreciosPage() {
           ¿Ya tienes una clave de licencia?
         </h2>
         <p className="mb-[18px] max-w-[56ch] text-[15.5px] leading-[1.55] text-slate-800">
-          Actívala desde la pestaña GeoVial en ArcGIS Pro, en el botón &quot;Licencia&quot;.
+          Actívala desde la pestaña GeoVial en ArcGIS Pro (o el panel GeoVial en QGIS), en el
+          botón &quot;Licencia&quot;.
         </p>
         <Link
           href="/descarga"

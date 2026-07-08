@@ -80,8 +80,8 @@ const steps = [
   },
   {
     icon: IconInstall,
-    title: "Instálalo en ArcGIS Pro",
-    description: "Doble clic sobre el archivo. No requiere permisos de administrador.",
+    title: "Instálalo en ArcGIS Pro o QGIS",
+    description: "Sin instaladores complejos, sin permisos de administrador.",
     color: "var(--color-blue-500)",
   },
   {
@@ -384,10 +384,10 @@ export default function Home() {
           >
             <div className="relative grid grid-cols-2 gap-x-11 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
               {[
-                ["Compatibilidad", "ArcGIS Pro 3.x", "#EAF1F8"],
+                ["Compatibilidad", "ArcGIS Pro 3.x · QGIS 3.28+", "#EAF1F8"],
                 ["Plataforma", "Windows 64-bit", "#EAF1F8"],
                 ["Herramientas", "09 geoprocesos", "#EAF1F8"],
-                ["Formato", ".esriAddinX", "#EAF1F8"],
+                ["Formato", ".esriAddinX · .zip", "#EAF1F8"],
                 ["Prueba", "3 días", "#EAF1F8"],
                 ["Licencia", "Desde $10/mes", "#7FE0A0"],
               ].map(([label, value, color]) => (
