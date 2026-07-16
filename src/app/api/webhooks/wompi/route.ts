@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     if (!alreadyActive) {
       const { sendLicenseEmail } = await import("@/lib/email");
       try {
-        await sendLicenseEmail({ email: license.email, name: license.name, key: license.key });
+        await sendLicenseEmail({ email: license.email, name: license.name, key: license.key, licenseId: license.id });
       } catch (err) {
         console.error("[webhook wompi] Falló el envío del correo de bienvenida:", err);
       }

@@ -1,4 +1,39 @@
 import { Resend } from "resend";
+import { cancelUrl } from "@/lib/license-links";
+
+const SITE_URL = process.env.SITE_URL || "https://geovialpro.com";
+
+/**
+ * Envuelve el contenido de un correo transaccional con el mismo header
+ * (wordmark GeoVial) y footer (contacto, dirección, copyright) en todos
+ * lados, para que se vea como un producto con respaldo real y no un
+ * correo de texto plano genérico.
+ */
+function emailLayout(bodyHtml: string): string {
+  return `
+<div style="background-color:#f5f8fa;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;">
+  <div style="max-width:520px;margin:0 auto;background-color:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
+    <div style="padding:28px 32px 20px;border-bottom:1px solid #e2e8f0;">
+      <span style="font-size:20px;font-weight:700;">
+        <span style="color:#16315a;">Geo</span><span style="color:#2570b8;">Vial</span>
+      </span>
+    </div>
+    <div style="padding:28px 32px;color:#1e293b;font-size:15px;line-height:1.6;">
+      ${bodyHtml}
+    </div>
+    <div style="padding:20px 32px 28px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12.5px;line-height:1.6;">
+      <p style="margin:0 0 8px;">
+        <a href="${SITE_URL}/contactenos" style="color:#2570b8;text-decoration:none;">¿Necesitas ayuda? Contáctenos</a>
+      </p>
+      <p style="margin:0 0 12px;">
+        GeoVial &middot; Add-in para ArcGIS Pro y QGIS &middot; Colombia<br/>
+        gerencia@geovialpro.com
+      </p>
+      <p style="margin:0;color:#94a3b8;">© ${new Date().getFullYear()} GeoVial. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</div>`.trim();
+}
 
 /**
  * Envío del correo con la clave de licencia.
@@ -14,9 +49,11 @@ export async function sendLicenseEmail(params: {
   email: string;
   name?: string | null;
   key: string;
+  licenseId: string;
 }): Promise<{ delivered: "log" | "resend" }> {
-  const { email, name, key } = params;
+  const { email, name, key, licenseId } = params;
   const apiKey = process.env.RESEND_API_KEY;
+  const saludo = name ? `Hola ${name},` : "Hola,";
 
   if (!apiKey) {
     console.log(
@@ -29,16 +66,40 @@ export async function sendLicenseEmail(params: {
   const from = process.env.RESEND_FROM_EMAIL || "GeoVial <onboarding@resend.dev>";
   const resend = new Resend(apiKey);
 
+  const html = emailLayout(`
+    <p style="margin:0 0 16px;">${saludo}</p>
+    <p style="margin:0 0 16px;">Gracias por tu compra. Esta es tu clave de licencia de GeoVial:</p>
+    <p style="margin:0 0 20px;padding:14px 18px;background-color:#f1f5f9;border-radius:8px;font-family:monospace;font-size:16px;font-weight:700;color:#16315a;letter-spacing:0.5px;">
+      ${key}
+    </p>
+    <p style="margin:0 0 24px;">
+      Actívala desde la pestaña GeoVial en ArcGIS Pro (o el panel GeoVial en QGIS), en el botón
+      "Licencia". Cada licencia solo puede activarse en un dispositivo.
+    </p>
+    <p style="margin:0 0 24px;">
+      <a href="${SITE_URL}/descarga" style="display:inline-block;background-color:#2570b8;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:6px;">
+        Instalar el add-in
+      </a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#64748b;">
+      <a href="${cancelUrl(licenseId)}" style="color:#64748b;text-decoration:underline;">Cancelar suscripción</a>
+    </p>
+  `);
+
   const { error } = await resend.emails.send({
     from,
     to: email,
     subject: "Tu clave de licencia de GeoVial",
+    html,
     text:
-      `${name ? `Hola ${name},\n\n` : "Hola,\n\n"}` +
+      `${saludo}\n\n` +
       `Gracias por tu compra. Esta es tu clave de licencia de GeoVial:\n\n` +
       `${key}\n\n` +
-      `Actívala desde la pestaña GeoVial en ArcGIS Pro, en el botón "Licencia".\n\n` +
-      `Cada licencia solo puede activarse en un dispositivo.`,
+      `Actívala desde la pestaña GeoVial en ArcGIS Pro (o el panel GeoVial en QGIS), en el botón "Licencia".\n\n` +
+      `Cada licencia solo puede activarse en un dispositivo.\n\n` +
+      `Instalar: ${SITE_URL}/descarga\n` +
+      `Cancelar suscripción: ${cancelUrl(licenseId)}\n` +
+      `Contáctenos: ${SITE_URL}/contactenos`,
   });
 
   if (error) {
