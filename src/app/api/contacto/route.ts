@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendQuoteRequestEmail, type QuoteRequestSource } from "@/lib/email";
+import { sendQuoteRequestEmail, sendQuoteConfirmationEmail, type QuoteRequestSource } from "@/lib/email";
 
 const VALID_SOURCES: QuoteRequestSource[] = ["cotizacion", "contacto"];
 
@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
 
   try {
     await sendQuoteRequestEmail({ nombre, correo, telefono, asunto, mensaje, source });
-    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[POST /api/contacto]", err);
     return NextResponse.json(
@@ -48,4 +47,14 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+
+  // La confirmación al remitente es un extra: si falla, no debe hacer
+  // fallar la petición (el mensaje ya llegó al correo interno).
+  try {
+    await sendQuoteConfirmationEmail({ nombre, correo, asunto, source });
+  } catch (err) {
+    console.error("[POST /api/contacto] Falló la confirmación al remitente:", err);
+  }
+
+  return NextResponse.json({ ok: true });
 }

@@ -249,3 +249,66 @@ export async function sendQuoteRequestEmail(params: {
 
   return { delivered: "resend" };
 }
+
+/** Asunto de la confirmación que recibe quien llena el formulario (no el interno). */
+const CONFIRMATION_SUBJECT = {
+  cotizacion: "Recibimos tu solicitud de cotización — GeoVial",
+  contacto: "Recibimos tu mensaje — GeoVial",
+} as const;
+
+/**
+ * Confirmación automática a quien llenó el formulario de "Servicios"
+ * (cotización) o "Contáctenos": avisa que el mensaje llegó y que le
+ * responderemos pronto. Se envía además del correo interno de aviso
+ * (`sendQuoteRequestEmail`), no en su lugar.
+ */
+export async function sendQuoteConfirmationEmail(params: {
+  nombre: string;
+  correo: string;
+  asunto: string;
+  source: QuoteRequestSource;
+}): Promise<{ delivered: "log" | "resend" }> {
+  const { nombre, correo, asunto, source } = params;
+  const apiKey = process.env.RESEND_API_KEY;
+  const primerNombre = nombre.split(" ")[0];
+
+  if (!apiKey) {
+    console.log(
+      `[sendQuoteConfirmationEmail] (modo local, sin RESEND_API_KEY) Enviaría confirmación a ${correo}`
+    );
+    return { delivered: "log" };
+  }
+
+  const from = process.env.RESEND_FROM_EMAIL || "GeoVial <onboarding@resend.dev>";
+  const resend = new Resend(apiKey);
+
+  const html = emailLayout(`
+    <p style="margin:0 0 16px;">Hola ${primerNombre},</p>
+    <p style="margin:0 0 16px;">
+      Recibimos tu ${source === "cotizacion" ? "solicitud de cotización" : "mensaje"}
+      "${asunto}". Nuestro equipo va a revisarlo y te vamos a contactar lo más pronto posible
+      con el análisis correspondiente.
+    </p>
+    <p style="margin:0;">Si mientras tanto tienes más detalles que compartir, solo responde este correo.</p>
+  `);
+
+  const { error } = await resend.emails.send({
+    from,
+    to: correo,
+    subject: CONFIRMATION_SUBJECT[source],
+    html,
+    text:
+      `Hola ${primerNombre},\n\n` +
+      `Recibimos tu ${source === "cotizacion" ? "solicitud de cotización" : "mensaje"} "${asunto}". ` +
+      `Nuestro equipo va a revisarlo y te vamos a contactar lo más pronto posible con el análisis ` +
+      `correspondiente.\n\n` +
+      `Si mientras tanto tienes más detalles que compartir, solo responde este correo.`,
+  });
+
+  if (error) {
+    console.error("[sendQuoteConfirmationEmail] Error al enviar con Resend:", error);
+    throw new Error(`No se pudo enviar el correo con Resend: ${error.message}`);
+  }
+
+  return { delivered: "resend" };
+}
