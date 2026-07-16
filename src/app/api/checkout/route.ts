@@ -5,6 +5,11 @@ import { generateUniqueLicenseKey } from "@/lib/license";
 import { PLANS, type PlanId } from "@/lib/plans";
 import { getAcceptanceTokens, createPaymentSource, createTransaction } from "@/lib/wompi";
 
+// Detrás del proxy de Render, `req.url` refleja el host interno del
+// contenedor (ej. localhost:10000), no el dominio público — por eso el
+// redirect se arma siempre sobre SITE_URL en vez de la request entrante.
+const SITE_URL = process.env.SITE_URL || "https://geovialpro.com";
+
 /** Los tokens de tarjeta de Wompi siempre tienen este prefijo (tok_test_/tok_prod_).
  * El widget de tokenización somete el formulario con el token en un campo
  * oculto cuyo nombre exacto Wompi no documenta públicamente, así que en vez
@@ -34,7 +39,7 @@ export async function POST(req: NextRequest) {
   const cardToken = extractCardToken(formData);
 
   if (!email || !cardToken || !plan) {
-    return NextResponse.redirect(new URL("/checkout/gracias?status=ERROR", req.url), 303);
+    return NextResponse.redirect(new URL("/checkout/gracias?status=ERROR", SITE_URL), 303);
   }
 
   try {
@@ -97,12 +102,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const redirectUrl = new URL("/checkout/gracias", req.url);
+    const redirectUrl = new URL("/checkout/gracias", SITE_URL);
     redirectUrl.searchParams.set("status", transaction.status);
     redirectUrl.searchParams.set("email", email);
     return NextResponse.redirect(redirectUrl, 303);
   } catch (err) {
     console.error("[checkout] Error creando el cobro:", err);
-    return NextResponse.redirect(new URL("/checkout/gracias?status=ERROR", req.url), 303);
+    return NextResponse.redirect(new URL("/checkout/gracias?status=ERROR", SITE_URL), 303);
   }
 }
