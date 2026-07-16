@@ -1,6 +1,6 @@
 {
-  "buildNumber": 5,
+  "buildNumber": 6,
   "version": "1.0-beta",
   "downloadUrl": "https://geovialpro.com/downloads/GeoVial.esriAddinX",
-  "notes": "Correccion importante: el trial vencido ahora si bloquea las herramientas (antes el limite no se aplicaba en ningun boton)."
+  "notes": "Mejoras en Cartografia 25k (evita archivos huerfanos y congelamientos en la descarga) y en imagenes satelitales (superresolucion Sentinel-2, seleccion de capa propia, quita el tope de 4x4 km)."
 }
