@@ -27,7 +27,8 @@ function emailLayout(bodyHtml: string): string {
       </p>
       <p style="margin:0 0 12px;">
         GeoVial &middot; Add-in para ArcGIS Pro y QGIS &middot; Colombia<br/>
-        gerencia@geovialpro.com
+        gerencia@geovialpro.com<br/>
+        <a href="${SITE_URL}" style="color:#2570b8;text-decoration:none;">${SITE_URL.replace(/^https?:\/\//, "")}</a>
       </p>
       <p style="margin:0;color:#94a3b8;">© ${new Date().getFullYear()} GeoVial. Todos los derechos reservados.</p>
     </div>
