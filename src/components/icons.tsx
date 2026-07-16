@@ -196,3 +196,45 @@ export function IconMail({ className = base }: IconProps) {
     </svg>
   );
 }
+
+export function IconLinkedin({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="2.5" />
+      <path d="M8 10.5v6M8 7.8v.02" strokeLinecap="round" />
+      <path d="M12 16.5v-3.8c0-1.2.9-2.2 2-2.2s2 1 2 2.2v3.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 12.7v3.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function IconInstagram({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+/* --- Servicios de ingeniería: hidrología, hidráulica y SIG --- */
+
+export function IconShield({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
+      <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" strokeLinejoin="round" />
+      <path d="M9 12l2 2 4-4.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconGraduation({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
+      <path d="M2 9l10-5 10 5-10 5-10-5z" strokeLinejoin="round" />
+      <path d="M6 11.5V17c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M22 9v6" strokeLinecap="round" />
+    </svg>
+  );
+}

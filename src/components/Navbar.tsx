@@ -15,6 +15,9 @@ export default function Navbar() {
           <Link href="/servicios" className="px-0.5 py-1.5 transition-colors hover:text-blue-600">
             Servicios
           </Link>
+          <Link href="/geovial-addin" className="px-0.5 py-1.5 transition-colors hover:text-blue-600">
+            GeoVial Addin
+          </Link>
           <Link href="/descarga" className="px-0.5 py-1.5 transition-colors hover:text-blue-600">
             Descarga
           </Link>
