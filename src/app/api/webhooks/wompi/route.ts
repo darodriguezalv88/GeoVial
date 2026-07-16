@@ -70,7 +70,17 @@ export async function POST(req: NextRequest) {
         console.error("[webhook wompi] Falló el envío del correo de bienvenida:", err);
       }
     }
-  } else if (transaction.status === "DECLINED" || transaction.status === "ERROR" || transaction.status === "VOIDED") {
+  } else if (transaction.status === "VOIDED") {
+    // Anulado: el comercio (nosotros) decidió reversar el cobro — el
+    // dinero nunca llega a liquidarse. A diferencia de un rechazo del
+    // banco, esto debe revocar el acceso de inmediato, no solo marcarlo
+    // "por vencer" (si no, la licencia seguiría válida hasta
+    // currentPeriodEnd aunque el pago que la sustentaba ya no exista).
+    await prisma.license.update({
+      where: { id: license.id },
+      data: { status: "EXPIRED", currentPeriodEnd: null },
+    });
+  } else if (transaction.status === "DECLINED" || transaction.status === "ERROR") {
     await prisma.license.update({
       where: { id: license.id },
       data: { status: "PAST_DUE" },
