@@ -60,13 +60,20 @@ function CheckoutForm() {
         <div className="mt-8 flex flex-col gap-4">
           <label className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-navy-700">Nombre</span>
-            <input required value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
+            <input
+              required
+              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass}
+            />
           </label>
           <label className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-navy-700">Correo</span>
             <input
               type="email"
               required
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={inputClass}
@@ -147,7 +154,17 @@ function WompiPaymentStep({ planId, name, email }: { planId: PlanId; name: strin
     script.setAttribute("data-public-key", process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY ?? "");
     form.appendChild(script);
 
+    // Wompi no expone ninguna forma de configurar el texto de su botón
+    // ("Guarda tu método de pago"), así que se observa el DOM y se le
+    // cambia el texto apenas lo renderiza, sin tocar su comportamiento.
+    const observer = new MutationObserver(() => {
+      const btn = form.querySelector("button");
+      if (btn && btn.textContent !== "Pagar") btn.textContent = "Pagar";
+    });
+    observer.observe(form, { childList: true, subtree: true, characterData: true });
+
     return () => {
+      observer.disconnect();
       for (const child of Array.from(form.children)) {
         if (!childrenBefore.has(child)) child.remove();
       }
