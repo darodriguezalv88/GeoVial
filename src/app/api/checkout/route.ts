@@ -59,7 +59,12 @@ export async function POST(req: NextRequest) {
     const periodMs = plan.id === "MONTHLY" ? 31 * 24 * 60 * 60 * 1000 : 366 * 24 * 60 * 60 * 1000;
 
     const existing = await prisma.license.findUnique({ where: { email } });
-    const isNewSubscriber = !existing?.wompiPaymentSourceId;
+    // Manda el correo cada vez que la licencia pasa a estar activa desde un
+    // estado que no lo estaba (nueva, o reactivada tras cancelación/
+    // vencimiento) — no solo la primerísima vez que se creó un
+    // payment_source, porque alguien puede cancelar y volver a comprar con
+    // el mismo correo más adelante y sí necesita el correo de nuevo.
+    const wasActive = existing?.status === "ACTIVE";
 
     const license = await prisma.license.upsert({
       where: { email },
@@ -83,7 +88,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (approved && isNewSubscriber) {
+    if (approved && !wasActive) {
       const { sendLicenseEmail } = await import("@/lib/email");
       try {
         await sendLicenseEmail({ email: license.email, name: license.name, key: license.key, licenseId: license.id });
