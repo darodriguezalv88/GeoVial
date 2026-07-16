@@ -49,6 +49,85 @@ export async function sendLicenseEmail(params: {
   return { delivered: "resend" };
 }
 
+/** Aviso de renovación fallida (cobro recurrente rechazado por el banco). */
+export async function sendPaymentFailedEmail(params: {
+  email: string;
+  name?: string | null;
+}): Promise<{ delivered: "log" | "resend" }> {
+  const { email, name } = params;
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    console.log(
+      `[sendPaymentFailedEmail] (modo local, sin RESEND_API_KEY) Enviaría aviso de pago fallido a ${email}`
+    );
+    return { delivered: "log" };
+  }
+
+  const from = process.env.RESEND_FROM_EMAIL || "GeoVial <onboarding@resend.dev>";
+  const resend = new Resend(apiKey);
+
+  const { error } = await resend.emails.send({
+    from,
+    to: email,
+    subject: "No pudimos procesar la renovación de tu licencia GeoVial",
+    text:
+      `${name ? `Hola ${name},\n\n` : "Hola,\n\n"}` +
+      `Intentamos renovar tu licencia de GeoVial y el banco rechazó el cobro a tu tarjeta.\n\n` +
+      `Actualiza tu método de pago desde https://geovialpro.com/precios para no perder acceso ` +
+      `a las herramientas.\n\n` +
+      `Si tienes dudas, responde este correo.`,
+  });
+
+  if (error) {
+    console.error("[sendPaymentFailedEmail] Error al enviar con Resend:", error);
+    throw new Error(`No se pudo enviar el correo con Resend: ${error.message}`);
+  }
+
+  return { delivered: "resend" };
+}
+
+/** Aviso previo a la renovación automática (unos días antes del cobro). */
+export async function sendRenewalReminderEmail(params: {
+  email: string;
+  name?: string | null;
+  renewsAt: Date;
+  priceCop: number;
+}): Promise<{ delivered: "log" | "resend" }> {
+  const { email, name, renewsAt, priceCop } = params;
+  const apiKey = process.env.RESEND_API_KEY;
+  const fecha = renewsAt.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" });
+  const monto = `$${priceCop.toLocaleString("es-CO")} COP`;
+
+  if (!apiKey) {
+    console.log(
+      `[sendRenewalReminderEmail] (modo local, sin RESEND_API_KEY) Enviaría aviso de renovación a ${email} (${monto}, ${fecha})`
+    );
+    return { delivered: "log" };
+  }
+
+  const from = process.env.RESEND_FROM_EMAIL || "GeoVial <onboarding@resend.dev>";
+  const resend = new Resend(apiKey);
+
+  const { error } = await resend.emails.send({
+    from,
+    to: email,
+    subject: "Tu licencia de GeoVial se renueva pronto",
+    text:
+      `${name ? `Hola ${name},\n\n` : "Hola,\n\n"}` +
+      `Tu suscripción de GeoVial se renueva automáticamente el ${fecha} por ${monto}, ` +
+      `cobrado a la misma tarjeta con la que pagaste la última vez.\n\n` +
+      `Si necesitas cancelar o cambiar de método de pago, responde este correo antes de esa fecha.`,
+  });
+
+  if (error) {
+    console.error("[sendRenewalReminderEmail] Error al enviar con Resend:", error);
+    throw new Error(`No se pudo enviar el correo con Resend: ${error.message}`);
+  }
+
+  return { delivered: "resend" };
+}
+
 /** Prefijo de asunto según el formulario de origen (nunca texto libre del cliente). */
 const SUBJECT_PREFIX = {
   cotizacion: "GEOVIAL - cotizacion",

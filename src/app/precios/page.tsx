@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IconCheck } from "@/components/icons";
-import { PLANS, checkoutUrl } from "@/lib/plans";
+import { PLANS, isPaymentsEnabled } from "@/lib/plans";
 
 export const metadata = {
   title: "Precios — GeoVial",
@@ -19,8 +19,9 @@ const features = [
 ];
 
 export default function PreciosPage() {
-  const monthlyUrl = checkoutUrl("MONTHLY");
-  const annualUrl = checkoutUrl("ANNUAL");
+  const paymentsEnabled = isPaymentsEnabled();
+  const monthlyUrl = paymentsEnabled ? "/checkout?plan=MONTHLY" : null;
+  const annualUrl = paymentsEnabled ? "/checkout?plan=ANNUAL" : null;
 
   return (
     <div className="mx-auto max-w-[920px] px-6 pb-24 pt-[72px]">
@@ -46,7 +47,7 @@ export default function PreciosPage() {
           checkoutHref={annualUrl}
           ctaLabel="Suscribirme anual"
           highlight
-          badge="Ahorra 25%"
+          badge="Ahorra 58%"
         />
       </div>
 
@@ -111,9 +112,10 @@ function PlanCard({
         {plan.label}
       </p>
       <p className="mt-2 font-display text-4xl font-bold tracking-tight text-navy-700">
-        ${plan.priceUsd}
-        <span className="text-lg font-medium text-slate-500"> USD / {plan.interval}</span>
+        ${plan.priceCop.toLocaleString("es-CO")}
+        <span className="text-lg font-medium text-slate-500"> COP / {plan.interval}</span>
       </p>
+      <p className="mt-1 text-sm text-slate-500">~${plan.priceUsd} USD</p>
 
       {checkoutHref ? (
         <a

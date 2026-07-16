@@ -36,6 +36,13 @@ model License {
   currentPeriodEnd  DateTime?
   lsCustomerId      String?
   lsSubscriptionId  String?  @unique
+  wompiPaymentSourceId   String?   @unique
+  wompiLastTransactionId String?
+  lastChargeAttemptAt    DateTime?
+  // Se resetea a null cada vez que currentPeriodEnd avanza (nuevo período),
+  // así el aviso de "tu suscripción se renueva pronto" se manda una sola
+  // vez por período, no una vez por corrida del cron.
+  renewalReminderSentAt  DateTime?
   createdAt   DateTime     @default(now())
   activations Activation[]
 }

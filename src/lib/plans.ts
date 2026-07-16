@@ -1,8 +1,8 @@
 /**
- * Configuración de los planes de licencia de GeoVial y construcción de la
- * URL de checkout hosted de Lemon Squeezy. Las variantId/store no son
- * secretas (quedan visibles en la propia URL de checkout), por eso viven
- * en variables NEXT_PUBLIC_*.
+ * Configuración de los planes de licencia de GeoVial. El checkout corre
+ * por Wompi, que liquida en pesos colombianos (COP): priceCop es el precio
+ * real, fijo, definido en pesos (no depende de la TRM). priceUsd es solo
+ * una referencia aproximada que se muestra junto al precio en pesos.
  */
 
 export type PlanId = "MONTHLY" | "ANNUAL";
@@ -11,40 +11,33 @@ export type PlanConfig = {
   id: PlanId;
   label: string;
   priceUsd: number;
+  priceCop: number;
   interval: "mes" | "año";
-  variantId: string | undefined;
 };
 
 export const PLANS: Record<PlanId, PlanConfig> = {
   MONTHLY: {
     id: "MONTHLY",
     label: "Mensual",
-    priceUsd: 10,
+    priceUsd: 12,
+    priceCop: 40_000,
     interval: "mes",
-    variantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_MONTHLY,
   },
   ANNUAL: {
     id: "ANNUAL",
     label: "Anual",
-    priceUsd: 90,
+    priceUsd: 60,
+    priceCop: 200_000,
     interval: "año",
-    variantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ANNUAL,
   },
 };
 
-const STORE_SUBDOMAIN = process.env.NEXT_PUBLIC_LEMONSQUEEZY_STORE;
-
 /**
- * URL de checkout hosted de Lemon Squeezy para un plan. Devuelve null si
- * todavía no están configuradas las variables de entorno (antes de tener
- * la cuenta de Lemon Squeezy lista), para que la UI pueda mostrar un botón
- * deshabilitado en vez de un link roto.
+ * Si Wompi está configurado (llave pública presente). Mientras la cuenta de
+ * Wompi siga en revisión y no tengamos las variables puestas en Render, el
+ * checkout debe mostrarse deshabilitado ("Próximamente") en vez de dejar a
+ * un visitante real llegar a un formulario que va a fallar.
  */
-export function checkoutUrl(planId: PlanId, opts?: { email?: string }): string | null {
-  const plan = PLANS[planId];
-  if (!STORE_SUBDOMAIN || !plan.variantId) return null;
-
-  const url = new URL(`https://${STORE_SUBDOMAIN}.lemonsqueezy.com/checkout/buy/${plan.variantId}`);
-  if (opts?.email) url.searchParams.set("checkout[email]", opts.email);
-  return url.toString();
+export function isPaymentsEnabled(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY);
 }
